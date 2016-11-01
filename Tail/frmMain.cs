@@ -48,19 +48,14 @@ namespace Tail
             const int WM_KEYDOWN = 0x100;
             const int WM_SYSKEYDOWN = 0x104;
 
-            if ((msg.Msg != WM_KEYDOWN) && (msg.Msg != WM_SYSKEYDOWN)) return base.ProcessCmdKey(ref msg, keys);
+            if ((msg.Msg != WM_KEYDOWN) && (msg.Msg != WM_SYSKEYDOWN))
+                return base.ProcessCmdKey(ref msg, keys);
 
             switch (keys)
             {
                 case Keys.Control | Keys.F:
 
-                    if (_frmFind == null)
-                    {
-                        _frmFind = new frmFind(syntaxDocument1.Lines);
-                        _frmFind.FoundText += _frmFind_FoundText;
-                        _frmFind.FormClosed += (s, args) => { _frmFind = null; syntaxBox.HighLightActiveLine = false; };
-                    }
-                    _frmFind.Show(this);
+                    launchFindForm();
                     break;
 
                 case Keys.F3:
@@ -71,36 +66,60 @@ namespace Tail
             return base.ProcessCmdKey(ref msg, keys);
         }
 
+        private void launchFindForm()
+        {
+            if (_frmFind == null)
+            {
+                _frmFind = new frmFind(syntaxDocument1.Lines);
+                _frmFind.FoundText += _frmFind_FoundText;
+                _frmFind.FormClosed += (s, args) =>
+                {
+                    _frmFind = null;
+                    syntaxBox.HighLightActiveLine = false;
+                };
+            }
+            _frmFind.Show(this);
+        }
+
         #endregion Status Log Search
 
         private void btnSelectFile_Click(object sender, EventArgs e)
         {
             var ofd = new OpenFileDialog();
-            if (ofd.ShowDialog() == DialogResult.OK)
+
+            // do nothing if the user doesn't select OK
+            if (ofd.ShowDialog() != DialogResult.OK) return;
+
+            txtFile.Text = ofd.FileName;
+
+            // Create a new FileSystemWatcher and set its properties.
+            var watcher = new FileSystemWatcher
             {
-                txtFile.Text = ofd.FileName;
-                // Create a new FileSystemWatcher and set its properties.
-                var watcher = new FileSystemWatcher
-                {
-                    Path = Path.GetDirectoryName(ofd.FileName),
-                    NotifyFilter = NotifyFilters.LastWrite,
-                    Filter = Path.GetFileName(ofd.FileName)
-                };
+                Path = Path.GetDirectoryName(ofd.FileName),
+                NotifyFilter = NotifyFilters.LastWrite,
+                Filter = Path.GetFileName(ofd.FileName)
+            };
 
-                // Add event handlers.
-                watcher.Changed += statusLogWatcher_Changed;
+            // Add event handlers.
+            watcher.Changed += statusLogWatcher_Changed;
 
-                // Begin watching.
-                watcher.EnableRaisingEvents = true;
-                setStatusLog(ofd.FileName);
-            }
+            // Begin watching.
+            watcher.EnableRaisingEvents = true;
+            setStatusLog(ofd.FileName);
         }
 
+        /// <summary>
+        /// When the tailed file changes, show the changes in the viewer.
+        /// </summary>
         private void statusLogWatcher_Changed(object sender, FileSystemEventArgs e)
         {
             setStatusLog(e.FullPath);
         }
 
+        /// <summary>
+        ///   opens the file and reads the last # of lines and sets the text in the viewer.
+        /// </summary>
+        /// <param name="path">Path to the file to tail</param>
         private void setStatusLog(string path)
         {
             using (var st = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
@@ -121,33 +140,60 @@ namespace Tail
 
         ///<summary>Returns the end of a text reader.</summary>
         ///<param name="reader">The reader to read from.</param>
-        ///<param name="lineCount">The number of lines to return.</param>
-        ///<returns>The last lneCount lines from the reader.</returns>
-        private static string[] tail(TextReader reader, int lineCount)
+        ///<param name="line_count">The number of lines to return.</param>
+        ///<returns>The last <paramref name="line_count"/> lines from the reader.</returns>
+        private static string[] tail(TextReader reader, int line_count)
         {
-            var buffer = new List<string>(lineCount);
+            // this was taken from StackOverflow, shamelessly.
+            //   http://stackoverflow.com/questions/4619735/how-to-read-last-n-lines-of-log-file
+
+            var buffer = new List<string>(line_count);
             string line;
-            for (var i = 0; i < lineCount; i++)
+            for (var i = 0; i < line_count; i++)
             {
                 line = reader.ReadLine();
                 if (line == null) return buffer.ToArray();
                 buffer.Add(line);
             }
 
-            var lastLine = lineCount - 1;           //The index of the last line read from the buffer.  Everything > this index was read earlier than everything <= this indes
+            //The index of the last line read from the buffer.  Everything > this index was read earlier than everything <= this indes
+            var last_line = line_count - 1;
 
             while (null != (line = reader.ReadLine()))
             {
-                lastLine++;
-                if (lastLine == lineCount) lastLine = 0;
-                buffer[lastLine] = line;
+                last_line++;
+                if (last_line == line_count) last_line = 0;
+                buffer[last_line] = line;
             }
 
-            if (lastLine == lineCount - 1) return buffer.ToArray();
-            var retVal = new string[lineCount];
-            buffer.CopyTo(lastLine + 1, retVal, 0, lineCount - lastLine - 1);
-            buffer.CopyTo(0, retVal, lineCount - lastLine - 1, lastLine + 1);
-            return retVal;
+            if (last_line == line_count - 1) return buffer.ToArray();
+            var return_value = new string[line_count];
+            buffer.CopyTo(last_line + 1, return_value, 0, line_count - last_line - 1);
+            buffer.CopyTo(0, return_value, line_count - last_line - 1, last_line + 1);
+            return return_value;
+        }
+
+        private void frmMain_Load(object sender, EventArgs e)
+        {
+            var cm = new ContextMenuStrip();
+
+            var mi_copy = new ToolStripMenuItem("&Copy");
+            mi_copy.Click += (s, args) =>
+            {
+                syntaxBox.Copy();
+            };
+            mi_copy.Image = Properties.Resources.copy;
+            cm.Items.Add(mi_copy);
+
+            var mi_find = new ToolStripMenuItem("&Find");
+            mi_find.Click += (s, args) =>
+            {
+                launchFindForm();
+            };
+            mi_find.Image = Properties.Resources.find;
+            cm.Items.Add(mi_find);
+
+            syntaxBox.ContextMenuStrip = cm;
         }
     }
 }

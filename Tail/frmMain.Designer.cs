@@ -63,7 +63,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.syntaxBox);
             this.splitContainer1.Size = new System.Drawing.Size(890, 668);
-            this.splitContainer1.SplitterDistance = 26;
+            this.splitContainer1.SplitterDistance = 25;
             this.splitContainer1.TabIndex = 0;
             // 
             // label2
@@ -125,6 +125,7 @@
             // 
             this.txtFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtFile.Enabled = false;
             this.txtFile.Location = new System.Drawing.Point(44, 4);
             this.txtFile.Name = "txtFile";
             this.txtFile.Size = new System.Drawing.Size(685, 20);
@@ -154,7 +155,7 @@
             this.syntaxBox.ReadOnly = true;
             this.syntaxBox.ShowGutterMargin = false;
             this.syntaxBox.ShowScopeIndicator = false;
-            this.syntaxBox.Size = new System.Drawing.Size(890, 638);
+            this.syntaxBox.Size = new System.Drawing.Size(890, 639);
             this.syntaxBox.SmoothScroll = true;
             this.syntaxBox.SplitView = false;
             this.syntaxBox.SplitviewH = -4;
@@ -183,6 +184,7 @@
             this.Name = "frmMain";
             this.ShowIcon = false;
             this.Text = "Tail";
+            this.Load += new System.EventHandler(this.frmMain_Load);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
