@@ -37,11 +37,11 @@
             this.radLabel2 = new System.Windows.Forms.Label();
             this.chkIgnoreCase = new System.Windows.Forms.CheckBox();
             this.grdResults = new System.Windows.Forms.DataGridView();
-            this.btnFindAll = new System.Windows.Forms.Button();
-            this.chkRegex = new System.Windows.Forms.CheckBox();
             this.Line = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.LineText = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.FoundTextString = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnFindAll = new System.Windows.Forms.Button();
+            this.chkRegex = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.grdResults)).BeginInit();
             this.SuspendLayout();
             // 
@@ -143,27 +143,6 @@
             this.grdResults.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.grdResults_CellDoubleClick);
             this.grdResults.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.grdResults_CellPainting);
             // 
-            // btnFindAll
-            // 
-            this.btnFindAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnFindAll.Location = new System.Drawing.Point(455, 40);
-            this.btnFindAll.Name = "btnFindAll";
-            this.btnFindAll.Size = new System.Drawing.Size(73, 24);
-            this.btnFindAll.TabIndex = 9;
-            this.btnFindAll.Text = "Find All";
-            this.btnFindAll.Click += new System.EventHandler(this.btnFindAll_Click);
-            // 
-            // chkRegex
-            // 
-            this.chkRegex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.chkRegex.AutoSize = true;
-            this.chkRegex.Location = new System.Drawing.Point(476, 15);
-            this.chkRegex.Name = "chkRegex";
-            this.chkRegex.Size = new System.Drawing.Size(57, 17);
-            this.chkRegex.TabIndex = 10;
-            this.chkRegex.Text = "Regex";
-            this.chkRegex.UseVisualStyleBackColor = true;
-            // 
             // Line
             // 
             this.Line.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
@@ -187,6 +166,27 @@
             this.FoundTextString.Name = "FoundTextString";
             this.FoundTextString.ReadOnly = true;
             // 
+            // btnFindAll
+            // 
+            this.btnFindAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnFindAll.Location = new System.Drawing.Point(455, 40);
+            this.btnFindAll.Name = "btnFindAll";
+            this.btnFindAll.Size = new System.Drawing.Size(73, 24);
+            this.btnFindAll.TabIndex = 9;
+            this.btnFindAll.Text = "Find All";
+            this.btnFindAll.Click += new System.EventHandler(this.btnFindAll_Click);
+            // 
+            // chkRegex
+            // 
+            this.chkRegex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkRegex.AutoSize = true;
+            this.chkRegex.Location = new System.Drawing.Point(476, 15);
+            this.chkRegex.Name = "chkRegex";
+            this.chkRegex.Size = new System.Drawing.Size(57, 17);
+            this.chkRegex.TabIndex = 10;
+            this.chkRegex.Text = "Regex";
+            this.chkRegex.UseVisualStyleBackColor = true;
+            // 
             // frmFind
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -207,6 +207,7 @@
             this.MinimumSize = new System.Drawing.Size(558, 353);
             this.Name = "frmFind";
             this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.Text = "Find";
             ((System.ComponentModel.ISupportInitialize)(this.grdResults)).EndInit();
             this.ResumeLayout(false);
